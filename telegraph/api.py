@@ -43,11 +43,12 @@ class Telegraph(object):
     :param access_token: Telegraph access token
     """
 
-    __slots__ = ('_telegraph',)
+    __slots__ = ('_telegraph', '_ensure_ascii')
 
-    def __init__(self, access_token=None):
+    def __init__(self, access_token=None, ensure_ascii=False):
         self._telegraph = TelegraphApi(access_token)
-
+        self._ensure_ascii = ensure_ascii
+        
     def get_access_token(self):
         """ Return current access_token
         """
@@ -159,7 +160,7 @@ class Telegraph(object):
         if content is None:
             content = html_to_nodes(html_content)
 
-        content_json = json.dumps(content)
+        content_json = json.dumps(content, ensure_ascii=self._ensure_ascii)
 
         return self._telegraph.method('createPage', values={
             'title': title,
@@ -192,7 +193,7 @@ class Telegraph(object):
         if content is None:
             content = html_to_nodes(html_content)
 
-        content_json = json.dumps(content)
+        content_json = json.dumps(content, ensure_ascii=self._ensure_ascii)
 
         return self._telegraph.method('editPage', path=path, values={
             'title': title,
